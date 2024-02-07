@@ -1,0 +1,8 @@
+python -m venv .venv
+flask run -p 5009
+
+pip freeze > requirements. txt
+
+docker build -t api-demo-flask-python .
+docker run -p 5005:5000 api-demo-flask-python
+docker run -d -p 5005:5000 api-demo-flask-python (running in the background)
