@@ -7,10 +7,18 @@ from schemas import StoreSchema
 blp = Blueprint("Stores", __name__, description="Operations on stores")
 
 
+def delete(store_id):
+    try:
+        del stores[store_id]
+        return {"message": "Store deleted."}
+    except KeyError:
+        abort(404, message="Store not found.")
+
+
 @blp.route("/store/<string:store_id>")
 class Store(MethodView):
-    @staticmethod
-    def get(store_id):
+    @blp.response(200, StoreSchema)
+    def get(self, store_id):
         try:
             # You presumably would want to include the store's items here too
             # More on that when we look at databases
@@ -18,22 +26,15 @@ class Store(MethodView):
         except KeyError:
             abort(404, message="Store not found.")
 
-    @staticmethod
-    def delete(store_id):
-        try:
-            del stores[store_id]
-            return {"message": "Store deleted."}
-        except KeyError:
-            abort(404, message="Store not found.")
-
 
 @blp.route("/store")
 class StoreList(MethodView):
-    @staticmethod
-    def get():
-        return {"stores": list(stores.values())}
+    @blp.response(200, StoreSchema(many=True))
+    def get(self):
+        return stores.values()
 
     @blp.arguments(StoreSchema)
+    @blp.response(201, StoreSchema)
     def post(self, store_data):
         for store in stores.values():
             if store_data["name"] == store["name"]:
