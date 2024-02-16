@@ -2,6 +2,7 @@ python -m venv .venv
 flask run -p 5009
 
 pip freeze > requirements.txt
+pip install -r requirements.txt
 
 docker build -t api-demo-flask-python .
 docker run -p 5005:5000 api-demo-flask-python
